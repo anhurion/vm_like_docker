@@ -11,11 +11,6 @@ ENV PYTHONUNBUFFERED=1 \
 
 USER root
 
-# RUN if ! id -u ubuntu >/dev/null 2>&1; then \
-#       useradd -m ubuntu; \
-#       usermod -aG sudo ubuntu \
-#     ;fi
-
 RUN apt-get update -y \
     && apt-get upgrade -y \
     && apt install -y \
@@ -25,7 +20,6 @@ RUN apt-get update -y \
     cowsay
 
 WORKDIR /root
-# RUN adduser -D nonroot
 
 # ---------------------------------------------------------------------------- #
 #                                 Optional Packages                            #
@@ -75,38 +69,10 @@ RUN if ${WHISTLES} && ${BELLS}; then \
         && curl -LO https://raw.githubusercontent.com/Aristeidis-Androutsopoulos/vm_like_docker/main/.zsh_plugins.txt \
         && curl -LO https://raw.githubusercontent.com/Aristeidis-Androutsopoulos/vm_like_docker/main/.zshrc \
     ;fi
-# ADD .zshrc $HOME
-
 
 RUN if ${WHISTLES} && ${BELLS}; then \
         /bin/zsh $HOME/.zshrc \
-        # && cp $HOME/.zshrc /home/ubuntu \
-        # && cp $HOME/.zsh_plugins.txt /home/ubuntu \
-        # && cp -r $HOME/.antidote /home/ubuntu \
     ;fi
-
-
-
-
-# ------------------------------- NON-ROOT USER ------------------------------ #
-# RUN if ${WHISTLES} && ${BELLS}; then \
-#         passwd -d ubuntu && chsh -s /bin/zsh ubuntu \
-#     ;fi
-# USER ubuntu
-
-# ADD .zshrc $HOME
-
-# RUN if ${WHISTLES} && ${BELLS}; then \
-#         /bin/zsh $HOME/.zshrc \
-#     ;fi
-
-# WORKDIR /home/ubuntu/.cache/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-sindresorhus-SLASH-pure/
-# RUN if ${WHISTLES} && ${BELLS}; then \
-#         sed -i '0,/prompt_pure_is_inside_container/s//true/' pure.zsh \
-#         && /bin/zsh $HOME/.zshrc \
-#     ;fi
-
-
 
 
 
@@ -121,8 +87,6 @@ RUN apt-get clean \
 && rm -rf /tmp/* /var/tmp/*
 # RUN rm -rf /usr/share/doc /usr/share/man /usr/share/info /usr/share/locale/ /var/log/*
 
-# USER ubuntu
 WORKDIR /env
-
 ENTRYPOINT [ "/bin/sh", "-c", "$(awk -F: -v user=$(whoami) '$1 == user {print $7}' /etc/passwd)" ]
 # ENTRYPOINT [ "/bin/sh", "-c", "if [ \"$WHISTLES\" = \"true\" ] && [ \"$BELLS\" = \"true\" ]; then exec /bin/zsh; else exec /bin/bash; fi" ]

@@ -5,6 +5,8 @@ ARG bells=true \
 ENV BELLS=${bells} \
     WHISTLES=${whistles}
 
+    ENV PYTHONUNBUFFERED=1 \
+    DEBIAN_FRONTEND=noninteractive
 
 USER root
 # USER ubuntu
@@ -30,6 +32,7 @@ RUN if ${BELLS} ; then \
         git \
         nano \
         plocate \
+        wget \
         # neofetch \
     ;fi
 
@@ -40,9 +43,16 @@ RUN if ${WHISTLES} && ${BELLS}; then \
         apt install -y \
         zsh \
         locales \
-        lsd \
+        # lsd \
     ;fi
 
+
+RUN if [ "${WHISTLES}" = "true" ] && [ "${BELLS}" = "true" ]; then \
+    echo "Downloading and installing lsd v1.1.5 from GitHub..."; \
+    curl -LO https://github.com/lsd-rs/lsd/releases/download/v1.1.5/lsd_1.1.5_amd64.deb && \
+    dpkg -i lsd_1.1.5_amd64.deb && \
+    rm lsd_1.1.5_amd64.deb \
+    ;fi
 
 
 

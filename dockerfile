@@ -1,4 +1,5 @@
-FROM ubuntu:24.04
+# FROM ubuntu:24.04
+FROM ubuntu:22.04
 ENV RUNNING_IN_DOCKER=true
 ARG bells=true \
     whistles=true
@@ -19,7 +20,9 @@ RUN apt-get update -y \
     cowsay
 
 WORKDIR /root
-# RUN adduser -D nonroot
+RUN id -u ubuntu || adduser --disabled-password ubuntu
+RUN id -u ubuntu && adduser --disabled-password ubuntu sudo
+
 
 # ---------------------------------------------------------------------------- #
 #                                 Optional Packages                            #
@@ -40,10 +43,16 @@ RUN if ${WHISTLES} && ${BELLS}; then \
         apt install -y \
         zsh \
         locales \
-        lsd \
     ;fi
-
-
+        
+RUN if grep -q 'VERSION_ID="24"' /etc/os-release; then \
+            apt install -y lsd; \
+        else \
+            curl -L -o lsd-v1.1.5-x86_64-unknown-linux-gnu.tar.gz https://github.com/lsd-rs/lsd/releases/download/v1.1.5/lsd-v1.1.5-x86_64-unknown-linux-gnu.tar.gz \
+            && tar -xzf lsd-v1.1.5-x86_64-unknown-linux-gnu.tar.gz \
+            && cd lsd-v1.1.5-x86_64-unknown-linux-gnu \
+            && mv lsd /usr/local/bin/ \
+    ;fi
 
 
 # --------------------------------- ROOT USER -------------------------------- #
@@ -69,7 +78,7 @@ RUN if ${WHISTLES} && ${BELLS}; then \
 
 
 
-
+# 
 # ------------------------------- NON-ROOT USER ------------------------------ #
 RUN if ${WHISTLES} && ${BELLS}; then \
         passwd -d ubuntu && chsh -s /bin/zsh ubuntu \

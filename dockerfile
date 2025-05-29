@@ -6,6 +6,8 @@ ARG bells=true \
 ENV BELLS=${bells} \
     WHISTLES=${whistles}
 
+    ENV PYTHONUNBUFFERED=1 \
+    DEBIAN_FRONTEND=noninteractive
 
 USER root
 # USER ubuntu
@@ -33,6 +35,7 @@ RUN if ${BELLS} ; then \
         git \
         nano \
         plocate \
+        wget \
         # neofetch \
     ;fi
 
@@ -44,15 +47,15 @@ RUN if ${WHISTLES} && ${BELLS}; then \
         zsh \
         locales \
     ;fi
-        
-RUN if grep -q 'VERSION_ID="24"' /etc/os-release; then \
-            apt install -y lsd; \
-        else \
-            curl -L -o lsd-v1.1.5-x86_64-unknown-linux-gnu.tar.gz https://github.com/lsd-rs/lsd/releases/download/v1.1.5/lsd-v1.1.5-x86_64-unknown-linux-gnu.tar.gz \
-            && tar -xzf lsd-v1.1.5-x86_64-unknown-linux-gnu.tar.gz \
-            && cd lsd-v1.1.5-x86_64-unknown-linux-gnu \
-            && mv lsd /usr/local/bin/ \
+
+
+RUN if [ "${WHISTLES}" = "true" ] && [ "${BELLS}" = "true" ]; then \
+    echo "Downloading and installing lsd v1.1.5 from GitHub..."; \
+    curl -LO https://github.com/lsd-rs/lsd/releases/download/v1.1.5/lsd_1.1.5_amd64.deb && \
+    dpkg -i lsd_1.1.5_amd64.deb && \
+    rm lsd_1.1.5_amd64.deb \
     ;fi
+
 
 
 # --------------------------------- ROOT USER -------------------------------- #

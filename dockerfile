@@ -63,11 +63,11 @@ RUN if ${WHISTLES} && ${BELLS} ; then \
     ;fi
 
 # Cache busting to avoid using outdated curl results
-ADD "https://api.github.com/repos/Aristeidis-Androutsopoulos/vm_like_docker/commits/main" latest_commit
+ADD "https://api.github.com/repos/anhurion/vm_like_docker/commits/main" latest_commit
 RUN if ${WHISTLES} && ${BELLS}; then \
         rm latest_commit \
-        && curl -LO https://raw.githubusercontent.com/Aristeidis-Androutsopoulos/vm_like_docker/main/.zsh_plugins.txt \
-        && curl -LO https://raw.githubusercontent.com/Aristeidis-Androutsopoulos/vm_like_docker/main/.zshrc \
+        && curl -LO https://raw.githubusercontent.com/anhurion/vm_like_docker/main/.zsh_plugins.txt \
+        && curl -LO https://raw.githubusercontent.com/anhurion/vm_like_docker/main/.zshrc \
     ;fi
 
 RUN if ${WHISTLES} && ${BELLS}; then \

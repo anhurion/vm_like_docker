@@ -19,7 +19,7 @@ if [[ $(id -u) -eq 0 ]]; then
         zstyle :prompt:pure:user:root color red
 fi
 zstyle :prompt:pure:user color blue
-zstyle :prompt:pure:host color yellow
+zstyle :prompt:pure:host color green
 
 # Define colors for TAB completion based on file types
 export LS_COLORS="di=34:ln=35:so=32:pi=33:ex=31:bd=34:cd=34:su=30:sg=30:ca=34:tw=30:ow=30"
@@ -44,6 +44,9 @@ if command -v lsd > /dev/null 2>&1
 then
    alias ls="lsd"
 fi
+
+# lazygit
+alias lg="lazygit"
 
 # Activate Pure prompt
 prompt pure

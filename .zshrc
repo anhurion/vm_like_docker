@@ -56,4 +56,24 @@ then
         fortune riddles | cowsay -f moose
 fi
 
+autoload -Uz add-zsh-hook
+
+_pure_force_userhost_colors() {
+  # Only run if Pure state exists (avoids errors during early init)
+  (( ${+prompt_pure_state} )) || return
+
+  if (( EUID == 0 )); then
+    prompt_pure_state[username]='%F{red}%n%f%F{yellow}@%m%f'
+  else
+    prompt_pure_state[username]='%F{blue}%n%f%F{yellow}@%m%f'
+  fi
+}
+
+add-zsh-hook precmd _pure_force_userhost_colors
+
+# Ensure this is always last so that pure does not overide somehow
+precmd_functions=(${precmd_functions:#_pure_force_userhost_colors} _pure_force_userhost_colors)
+
+
+
 # Docker build settings go below this line (end of file)

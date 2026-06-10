@@ -1,3 +1,17 @@
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt SHARE_HISTORY
+setopt APPEND_HISTORY
+
+
+# Add selection highlighting
+zmodload zsh/complist
+autoload -Uz compinit
+compinit
+
 # Load Antidote, a Zsh plugin manager, and plugins
 source $HOME/.antidote/antidote.zsh
 antidote load $HOME/.zsh_plugins.txt
@@ -19,12 +33,14 @@ if [[ $(id -u) -eq 0 ]]; then
         zstyle :prompt:pure:user:root color red
 fi
 zstyle :prompt:pure:user color blue
-zstyle :prompt:pure:host color green
+zstyle :prompt:pure:host color yellow
 
 # Define colors for TAB completion based on file types
-export LS_COLORS="di=34:ln=35:so=32:pi=33:ex=31:bd=34:cd=34:su=30:sg=30:ca=34:tw=30:ow=30"
+# export LS_COLORS="di=34:ln=35:so=32:pi=33:ex=31:bd=34:cd=34:su=30:sg=30:ca=34:tw=30:ow=30"
 zstyle ':completion:*' menu select
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+# zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS} 'ma=48;5;197;38;5;232'
+
 
 # Set language to English UTF-8
 export LANG=en_US.UTF-8
@@ -45,9 +61,6 @@ then
    alias ls="lsd"
 fi
 
-# lazygit
-alias lg="lazygit"
-
 # Activate Pure prompt
 prompt pure
 
@@ -58,5 +71,26 @@ then
         alias hehe="fortune riddles | cowsay -f moose"
         fortune riddles | cowsay -f moose
 fi
+
+
+autoload -Uz add-zsh-hook
+
+_pure_force_userhost_colors() {
+  # Only run if Pure state exists (avoids errors during early init)
+  (( ${+prompt_pure_state} )) || return
+
+  if (( EUID == 0 )); then
+    prompt_pure_state[username]='%F{red}%n%f%F{yellow}@%m%f'
+  else
+    prompt_pure_state[username]='%F{blue}%n%f%F{yellow}@%m%f'
+  fi
+}
+
+add-zsh-hook precmd _pure_force_userhost_colors
+
+# Ensure this is always last so that pure does not overide somehow
+precmd_functions=(${precmd_functions:#_pure_force_userhost_colors} _pure_force_userhost_colors)
+
+
 
 # Docker build settings go below this line (end of file)

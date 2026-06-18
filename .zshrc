@@ -92,5 +92,6 @@ add-zsh-hook precmd _pure_force_userhost_colors
 precmd_functions=(${precmd_functions:#_pure_force_userhost_colors} _pure_force_userhost_colors)
 
 
+export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
 
 # Docker build settings go below this line (end of file)
